@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Garage Door Opener</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+      button {
+        background-color: blue;
+        color: white;
+        border: none;
+        padding: 15px 25px;
+        border-radius: 5px;
+        font-size: 24px;
+      }
+      
+      #status {
+        font-size: 20px;
+        margin-top: 20px;
+        text-align: center;
+        color: green;
+      }
+      
+      #last-operated {
+        font-size: 20px;
+        margin-top: 20px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div style="text-align:center;">
+      <h1>Garage Door Opener</h1>
+      <button id="toggle">Open/Close Garage Door</button>
+      <p id="status"></p>
+      <p id="last-operated">Garage Operated Remotely Last: <span id="timestamp">{{ last_operated }}</span></p>
+    </div>
+
+    <script>
+      $(document).ready(function() {
+        // Set the last operated timestamp
+        var lastOperated = "{{ last_operated }}";
+        $("#timestamp").text(lastOperated);
+
+        // Handle the button click
+        $("#toggle").click(function() {
+          $.ajax({
+            url: "/open",
+            success: function(data) {
+              $("#status").text("Successfully opened/closed the garage door").css("color", "green");
+              setTimeout(function() {
+                $("#status").text("");
+              }, 5000);
+              $("#timestamp").text(new Date().toLocaleString());
+            },
+            error: function(data) {
+              $("#status").text("Error: Unable to toggle the garage door").css("color", "red");
+              setTimeout(function() {
+                $("#status").text("");
+              }, 5000);
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
